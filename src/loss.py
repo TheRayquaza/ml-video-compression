@@ -1,11 +1,19 @@
 import tensorflow as tf
 
-def PSNR(super_resolution, high_resolution):
-    """Compute the peak signal-to-noise ratio, measures quality of image."""
-    psnr_value = tf.image.psnr(high_resolution, super_resolution, max_val=255)[0]
-    return psnr_value
+def PSNR(y_true, y_pred):
+    # Ensure inputs are float32 and in correct range
+    y_true = tf.cast(y_true, tf.float32)
+    y_pred = tf.cast(y_pred, tf.float32)
+    
+    # Calculate PSNR for each image in batch and return mean
+    psnr_values = tf.image.psnr(y_true, y_pred, max_val=255.0)
+    return tf.reduce_mean(psnr_values)
 
-def PSNR_non_training(super_resolution, high_resolution):
-    """Compute the peak signal-to-noise ratio, measures quality of image."""
-    psnr_value = tf.image.psnr(high_resolution, super_resolution, max_val=255)
-    return tf.get_static_value(psnr_value)
+def SSIM(y_true, y_pred):
+    # Ensure inputs are float32 and in correct range
+    y_true = tf.cast(y_true, tf.float32)
+    y_pred = tf.cast(y_pred, tf.float32)
+    
+    # Calculate SSIM for each image in batch and return mean
+    ssim_values = tf.image.ssim(y_true, y_pred, max_val=255.0)
+    return tf.reduce_mean(ssim_values)

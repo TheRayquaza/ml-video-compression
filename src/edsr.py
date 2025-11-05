@@ -1,17 +1,34 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-from src.loss import PSNR_non_training as PSNR
+import tensorflow as tf
+from tensorflow.keras.callbacks import Callback
+from src.loss import SSIM, PSNR
 
 class EDSRModel(tf.keras.Model):
     def train_step(self, data):
         x, y = data
+
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)
             loss = self.compiled_loss(y, y_pred, regularization_losses=self.losses)
+        
         grads = tape.gradient(loss, self.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.trainable_variables))
+
+        for metric in self.metrics:
+            if metric.name != 'loss':
+                metric.update_state(y, y_pred)
+        
+        return {m.name: m.result() for m in self.metrics}
+
+    def test_step(self, data):
+        x, y = data
+        y_pred = self(x, training=False)
+        
+        self.compiled_loss(y, y_pred, regularization_losses=self.losses)
         self.compiled_metrics.update_state(y, y_pred)
+
         return {m.name: m.result() for m in self.metrics}
 
     def predict_step(self, x):
@@ -57,10 +74,14 @@ def build_model(num_filters=64, num_res_blocks=16, scale=2, metric="psnr", loss=
     outputs = layers.Rescaling(255)(outputs)
 
     model = EDSRModel(inputs, outputs)
-
+    metrics = []
     metric = metric.lower()
     if metric == "psnr":
-        metric = PSNR
+        metrics = [PSNR]
+    elif metric == "ssim":
+        metrics = [SSIM]
+    elif metric == "both":
+        metrics = [PSNR, SSIM]
     else:
         raise ValueError(f"Metric {metric} not recognized.")
 
@@ -69,14 +90,41 @@ def build_model(num_filters=64, num_res_blocks=16, scale=2, metric="psnr", loss=
             boundaries=[5000], values=[1e-4, 5e-5]
         )
     )
-    model.compile(optimizer=optim_edsr, loss=loss, metrics=[metric])
+    model.compile(optimizer=optim_edsr, loss=loss, metrics=metrics)
     return model
 
-def train_model(model, train_ds, val_ds, epochs, scale, metric="psnr"):
-    epochs  = epochs
-    weights_filename = f'weights_{metric}_{epochs}epochs_{scale}scale.weights.h5'
+class SaveWeightsAtEpochs(Callback):
+    def __init__(self, save_epochs, base_filename):
+        super().__init__()
+        self.save_epochs = set(save_epochs)
+        self.base_filename = base_filename
 
-    history = model.fit(train_ds, epochs=epochs, steps_per_epoch=200, validation_data=val_ds)
-    model.save_weights(weights_filename)
+    def on_epoch_end(self, epoch, logs=None):
+        current_epoch = epoch + 1
+        if current_epoch in self.save_epochs:
+            filename = f"{self.base_filename}_epoch{current_epoch}.weights.h5"
+            self.model.save_weights(filename)
+            print(f"\nSaved weights at epoch {current_epoch} to {filename}")
+
+def train_model(model, train_ds, val_ds, epochs, scale, saving_epochs=None):
+    if saving_epochs is None:
+        saving_epochs = []
+
+    base_filename = f'weights_{epochs}epochs_{scale}scale'
+
+    callbacks = [SaveWeightsAtEpochs(saving_epochs, base_filename)] if saving_epochs else []
+
+    history = model.fit(
+        train_ds, 
+        epochs=epochs, 
+        steps_per_epoch=200, 
+        validation_data=val_ds,
+        callbacks=callbacks
+    )
+    
+    # Save final weights
+    final_weights_filename = f"{base_filename}_final.weights.h5"
+    model.save_weights(final_weights_filename)
+    print(f"Saved final weights to {final_weights_filename}")
+    
     return model, history
-
