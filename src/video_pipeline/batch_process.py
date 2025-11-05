@@ -4,7 +4,7 @@ This script processes all YUV files in the source/ directory through the EDSR pi
 calculates PSNR for each, and stores the results in a CSV file.
 
 Usage:
-  python batch_process.py --weights PATH_TO_WEIGHTS --source-dir source/ --output-csv results.csv
+  python batch_process.py --weights PATH_TO_WEIGHTS --source-dir source/ --output-csv results/results.csv
 """
 
 import os

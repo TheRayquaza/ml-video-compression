@@ -1,7 +1,7 @@
 """Improved YUV inference pipeline that processes YUV files through EDSR model.
 
 Usage:
-  python yuv_pipeline.py --weights PATH_TO_WEIGHTS --yuv input.yuv --width 1920 --height 1080
+  python datapipeline.py --weights PATH_TO_WEIGHTS --yuv input.yuv --width 1920 --height 1080
 
 This pipeline:
 1. Extracts all frames from YUV file to PNG format
