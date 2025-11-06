@@ -27,6 +27,8 @@
               python
               pkgs.uv
               pkgs.zlib
+              pkgs.opencv
+              pkgs.python313Packages.opencv4
             ];
             profile = ''
               export UV_PYTHON=${python}
