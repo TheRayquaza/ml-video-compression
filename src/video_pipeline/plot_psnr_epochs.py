@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 
 def parse_epochs_from_filename(path):
-    m = re.search(r"results_(\d+)_epochs_2_scale\.csv$", path)
+    m = re.search(r"results_(\d+)_epochs_8_scale\.csv$", path)
     if m:
         return int(m.group(1))
     return None
@@ -34,7 +34,6 @@ def load_all(csv_paths):
     data = {}
     for p in csv_paths:
         epochs = parse_epochs_from_filename(p)
-        print(epochs)
         if epochs is None:
             continue
         df = pd.read_csv(p)
@@ -88,13 +87,13 @@ def plot_all_videos_single_plot(videos_dict, out_dir="plots"):
     if avg_x:
         plt.plot(avg_x, avg_y, linestyle='--', color='k', linewidth=2.0, label='average')
 
-    plt.title("PSNR vs epochs with Scaling of 2 — sources/ videos")
+    plt.title("PSNR vs epochs with Scaling of 8 — sources/ videos")
     plt.xlabel("epochs")
     plt.ylabel("mean PSNR (dB)")
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.legend(loc='best', fontsize='small')
 
-    outpath = os.path.join(out_dir, "psnr_all_videos_vs_epochs_scale_4.png")
+    outpath = os.path.join(out_dir, "psnr_all_videos_vs_epochs_scale_8.png")
     plt.savefig(outpath, bbox_inches='tight')
     plt.close()
     print(f"Wrote {outpath}")
@@ -105,7 +104,6 @@ def main():
         root = sys.argv[1]
     else:
         root = os.path.dirname(__file__)
-    print(root)
     csvs = find_result_csvs(root)
     if not csvs:
         print("No result CSVs found (looking for results_*_epochs.csv)")

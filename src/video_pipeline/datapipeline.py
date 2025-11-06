@@ -16,6 +16,7 @@ from PIL import Image
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+from src.edsr import build_model
 
 
 def PSNR_non_training(super_resolution, high_resolution):
@@ -116,47 +117,6 @@ def upsample_block(x, scale=2, num_filters=64):
     
     return x
 
-
-def build_edsr(scale=4, num_res_blocks=16, num_filters=64, input_shape=(None, None, 3)):
-    """Build EDSR model with configurable scale factor.
-    
-    Args:
-        scale: Upscaling factor (2, 4, 8, or 16)
-        num_res_blocks: Number of residual blocks (typically 16)
-        num_filters: Number of filters in Conv2D layers (typically 64)
-        input_shape: Input shape (None, None, 3) for flexible input size
-    
-    Returns:
-        EDSR Keras Model
-    """
-    inp = layers.Input(shape=input_shape)
-    
-    # Rescaling input from [0-255] to [0-1]
-    x = layers.Rescaling(scale=1.0 / 255)(inp)
-    
-    # Initial convolution
-    x = x_new = layers.Conv2D(num_filters, 3, padding='same')(x)
-    
-    # Residual blocks
-    for _ in range(num_res_blocks):
-        x_new = edsr_res_block(x_new, num_filters)
-    
-    x_new = layers.Conv2D(num_filters, 3, padding='same')(x_new)
-    x = layers.Add()([x, x_new])
-    
-    # Upsampling with configurable scale
-    x = upsample_block(x, scale=scale, num_filters=num_filters)
-    
-    # Final convolution
-    x = layers.Conv2D(3, 3, padding='same')(x)
-    
-    # Rescaling output from [0-1] to [0-255]
-    out = layers.Rescaling(scale=255)(x)
-    
-    model = keras.Model(inputs=inp, outputs=out, name='edsr')
-    return model
-
-
 def get_frame_count(yuv_path, width, height):
     """Calculate the number of frames in a YUV420 file."""
     frame_size = width * height * 3 // 2
@@ -174,8 +134,11 @@ def extract_all_frames(yuv_path, width, height, output_dir):
     for frame_idx in range(frame_count):
         out_path = os.path.join(output_dir, f'frame_{frame_idx:04d}.png')
         print(f'Extracting frame {frame_idx}/{frame_count-1} -> {out_path}')
+        if os.path.exists(out_path):
+            print('  Frame already exists, skipping.')
+            continue
         yuv420_to_png(yuv_path, width, height, frame_idx, out_path)
-    
+
     print(f'✓ Extracted {frame_count} frames to {output_dir}')
     return frame_count
 
@@ -226,11 +189,11 @@ def run_inference_batch(model, input_dir, output_dir, original_dir=None, scale=4
         # Load image (keep in [0-255] range as model expects this)
         img = Image.open(input_path).convert('RGB')
         arr = np.array(img).astype(np.float32)
-        inp = np.expand_dims(arr, 0)
-        
+        print(arr.shape)
+
         # Run inference (model outputs [0-255] range)
-        sr = model.predict(inp, verbose=0)
-        sr = np.clip(sr[0], 0, 255).astype(np.uint8)
+        sr = model.predict(arr, verbose=0)
+        sr = np.clip(sr, 0, 255).astype(np.uint8)
         
         # Calculate PSNR if original high-res frames are provided
         if original_dir is not None:
@@ -314,7 +277,7 @@ def main():
     
     # Build and load model
     print('\n=== Loading EDSR Model ===')
-    model = build_edsr(scale=args.scale, num_res_blocks=16, num_filters=64, input_shape=(None, None, 3))
+    model = build_model(scale=args.scale, num_res_blocks=16, num_filters=64)
     
     try:
         model.load_weights(args.weights)

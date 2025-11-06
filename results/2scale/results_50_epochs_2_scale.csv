@@ -1,6 +1,6 @@
 filename,input_width,input_height,output_width,output_height,fps,frame_count,scale_factor,mean_psnr_db,input_size_mb,output_size_mb,output_path,status
-BlowingBubbles_416x240_50_420.yuv,416,240,1664,960,50,60,4,26.32217632929484,8.57,137.11,output/BlowingBubbles_416x240_50_420/BlowingBubbles_416x240_50_420_upscaled.yuv,Success
-RaceHorses_416x240_30_420.yuv,416,240,1664,960,30,60,4,26.630708154042562,8.57,137.11,output/RaceHorses_416x240_30_420/RaceHorses_416x240_30_420_upscaled.yuv,Success
-BQMall_832x480_60_420.yuv,832,480,3328,1920,60,60,4,25.702326647440593,34.28,548.44,output/BQMall_832x480_60_420/BQMall_832x480_60_420_upscaled.yuv,Success
-BQSquare_416x240_60_420.yuv,416,240,1664,960,60,60,4,20.709337425231933,8.57,137.11,output/BQSquare_416x240_60_420/BQSquare_416x240_60_420_upscaled.yuv,Success
-BasketballPass_416x240_50_420.yuv,416,240,1664,960,50,60,4,27.557334582010906,8.57,137.11,output/BasketballPass_416x240_50_420/BasketballPass_416x240_50_420_upscaled.yuv,Success
+BlowingBubbles_416x240_50_420.yuv,416,240,832,480,50,60,2,30.020728143056235,8.57,34.28,output/BlowingBubbles_416x240_50_420/BlowingBubbles_416x240_50_420_upscaled.yuv,Success
+RaceHorses_416x240_30_420.yuv,416,240,832,480,30,60,2,31.773774592081704,8.57,34.28,output/RaceHorses_416x240_30_420/RaceHorses_416x240_30_420_upscaled.yuv,Success
+BQMall_832x480_60_420.yuv,832,480,1664,960,60,60,2,29.090287113189696,34.28,137.11,output/BQMall_832x480_60_420/BQMall_832x480_60_420_upscaled.yuv,Success
+BQSquare_416x240_60_420.yuv,416,240,832,480,60,60,2,24.39652264912923,8.57,34.28,output/BQSquare_416x240_60_420/BQSquare_416x240_60_420_upscaled.yuv,Success
+BasketballPass_416x240_50_420.yuv,416,240,832,480,50,60,2,31.4674209912618,8.57,34.28,output/BasketballPass_416x240_50_420/BasketballPass_416x240_50_420_upscaled.yuv,Success

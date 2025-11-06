@@ -15,10 +15,10 @@ import re
 from datapipeline import (
     extract_all_frames,
     downscale_frames,
-    build_edsr,
     run_inference_batch,
     convert_to_yuv
 )
+from src.edsr import build_model
 from tensorflow import keras
 
 
@@ -183,7 +183,7 @@ def main():
     
     # Build and load model
     print('\n=== Loading EDSR Model ===')
-    model = build_edsr(scale=args.scale, num_res_blocks=16, num_filters=64, input_shape=(None, None, 3))
+    model = build_model(scale=args.scale, num_res_blocks=16, num_filters=64, loss="mae", metric="both")
     
     try:
         model.load_weights(args.weights)

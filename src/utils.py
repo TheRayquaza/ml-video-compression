@@ -1,12 +1,25 @@
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
-def plot_results(lowres, preds):
+def plot_results(lowres, preds, highres=None):
     """
-    Displays low resolution image and super resolution image
+    Displays low-res, predicted, and optionally high-res image.
     """
-    plt.figure(figsize=(10, 10))
-    plt.subplot(132), plt.imshow(lowres), plt.title("Low resolution")
-    plt.subplot(133), plt.imshow(preds), plt.title("Prediction")
+    plt.figure(figsize=(15, 5))
+    plt.subplot(131)
+    plt.imshow(lowres)
+    plt.title("Low resolution")
+
+    plt.subplot(132)
+    plt.imshow(preds)
+    plt.title("Prediction")
+
+    if highres is not None:
+        plt.subplot(133)
+        plt.imshow(highres)
+        plt.title("High resolution (ground truth)")
+
+    plt.tight_layout()
     plt.show()
 
 def plot_history(history):

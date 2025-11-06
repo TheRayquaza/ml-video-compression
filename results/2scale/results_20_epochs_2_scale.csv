@@ -1,6 +1,7 @@
 filename,input_width,input_height,output_width,output_height,fps,frame_count,scale_factor,mean_psnr_db,input_size_mb,output_size_mb,output_path,status
-BlowingBubbles_416x240_50_420.yuv,416,240,1664,960,50,60,4,25.992060693105064,8.57,137.11,output/BlowingBubbles_416x240_50_420/BlowingBubbles_416x240_50_420_upscaled.yuv,Success
-RaceHorses_416x240_30_420.yuv,416,240,1664,960,30,60,4,25.86703780492147,8.57,137.11,output/RaceHorses_416x240_30_420/RaceHorses_416x240_30_420_upscaled.yuv,Success
-BQMall_832x480_60_420.yuv,832,480,3328,1920,60,60,4,25.320340569814046,34.28,548.44,output/BQMall_832x480_60_420/BQMall_832x480_60_420_upscaled.yuv,Success
-BQSquare_416x240_60_420.yuv,416,240,1664,960,60,60,4,20.402635860443116,8.57,137.11,output/BQSquare_416x240_60_420/BQSquare_416x240_60_420_upscaled.yuv,Success
-BasketballPass_416x240_50_420.yuv,416,240,1664,960,50,60,4,27.146162859598796,8.57,137.11,output/BasketballPass_416x240_50_420/BasketballPass_416x240_50_420_upscaled.yuv,Success
+Cactus_1920x1080_50_420.yuv,1920,1080,3840,2160,50,N/A,2,N/A,N/A,N/A,N/A,Failed: image file is truncated
+BlowingBubbles_416x240_50_420.yuv,416,240,832,480,50,60,2,29.36046927769979,8.57,34.28,output/BlowingBubbles_416x240_50_420/BlowingBubbles_416x240_50_420_upscaled.yuv,Success
+RaceHorses_416x240_30_420.yuv,416,240,832,480,30,60,2,30.577821731567383,8.57,34.28,output/RaceHorses_416x240_30_420/RaceHorses_416x240_30_420_upscaled.yuv,Success
+BQMall_832x480_60_420.yuv,832,480,1664,960,60,60,2,28.51859073638916,34.28,137.11,output/BQMall_832x480_60_420/BQMall_832x480_60_420_upscaled.yuv,Success
+BQSquare_416x240_60_420.yuv,416,240,832,480,60,60,2,23.672058455149333,8.57,34.28,output/BQSquare_416x240_60_420/BQSquare_416x240_60_420_upscaled.yuv,Success
+BasketballPass_416x240_50_420.yuv,416,240,832,480,50,60,2,30.6639547030131,8.57,34.28,output/BasketballPass_416x240_50_420/BasketballPass_416x240_50_420_upscaled.yuv,Success
